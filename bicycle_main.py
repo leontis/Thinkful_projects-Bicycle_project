@@ -1,51 +1,68 @@
-class Wheel(object):
-	"""A class for wheels"""
-	def __init__(self,model_name,weight,production_cost):
-		self.model_name = model_name
-		self.weight = weight
-		self.production_cost = production_cost
+from classes import *
+inventory = []
+shop1 = Bike_shop("Some_Great_Bikes", inventory, .20)
 
-class Frames(object):
-	"""A class for frames"""
-	def __init__(self,material,weight,production_cost):
-		self.material = material
-		self.weight = weight
-		self.production_cost = production_cost
-		
-class Bicycle_models(object):
-	def __init__(self,name,manufacturer,total_wt,total_cost,components):
-		self.name = name
-		self.manufacturer = manufacturer
-		self.total_wt = total_wt
-		self.total_cost = total_cost
-		self.components = components
+cust1 = Customer("Kevin",1000,[])
+cust2 = Customer("Craig",300,[])
+cust3 = Customer("Neocles",150,[])
+customers = [cust1, cust2, cust3]
+print "\nCustomers: \n" 
+for cust in customers:
+	print "Name :", cust.name, "/ Funds: ", cust.bike_fund
 
-class Manufacturer(object):
-	def __init__(self,name,models,profit_margin):
-		self.name = name
-		self.models = models
-		self.profit_margin = profit_margin
+frame1 = Frame("carbon")
+frame2 = Frame("aluminum")
+frame3 = Frame("steel")
 
-class Bike_shops(object):
-	def __init__(self,name,inventory,profit_margin):	
-		self.name = name
-		self.inventory = inventory
-		self.profit_margin = profit_margin
+frames = [frame1,frame2,frame3]
+print "\nFrames: \n" 
+for frame in frames:
+	print frame.material, "frame weight: ", frame.weight(), "frame cost: ", frame.prod_cost()
 
-class Customer(object):
-	def __init__(self,name,bike_fund):
-		self.name = name
-		self.bike_fund = bike_fund		
+wheel1 = Wheel("Sleek","carbon")
+wheel2 = Wheel("OK","aluminum")
+wheel3 = Wheel("Clunky","steel")
 
-man1 = Manufacturer("Cheap_Bikes","models",0.05)
-print man1.name, man1.profit_margin
+wheels = [wheel1, wheel2, wheel3]
+print "\nWheels: \n" 
+for wheel in wheels:
+	print wheel.wheel_name, "wheel weight: ", wheel.weight(), "wheel cost: ", wheel.prod_cost()
 
-man2 = Manufacturer("Pricy_Bikes","models",0.25)
-print man2.name, man2.profit_margin
+man1 = Manufacturer("Cheap_Bikes",0.05)
+man2 = Manufacturer("Pricy_Bikes",0.25)
+manufacturers = [man1, man2]
 
-shop1 = Bike_shops("Great_Bikes", "inventory", .20)
+print "\nManufacturers: \n" 
+for man in manufacturers:
+	print "Name :", man.name, "/ Margin = ", man.profit_margin
 
-cust1 = Customer("Kevin",1000)
-cust2 = Customer("Neocles",100)
-cust3 = Customer("Craig",500)
-print cust1.name, cust2.name
+model1 = Bicycle_model("Swift", frame1, wheel1, man1)
+model2 = Bicycle_model("JustSo", frame2, wheel2, man1)
+model3 = Bicycle_model("Clunker", frame3, wheel3, man1)
+model4 = Bicycle_model("Swift", frame1, wheel1, man2)
+model5 = Bicycle_model("JustSo", frame2, wheel2, man2)
+model6 = Bicycle_model("Clunker", frame3, wheel3, man2)
+
+
+models = [model1, model2, model3, model4, model5, model6]
+
+print "\nModels: \n" 
+for model in models:
+	 whole_sale = wholesale_price(model.prod_cost(),model.manufacturer.profit_margin)
+	 retail = retail_price(whole_sale, shop1.profit_margin)
+	 print model.name, model.manufacturer.name, "wt =", model.total_wt(), "prod cost = $",model.prod_cost(), "whole_sale = $", whole_sale, "retail= $", retail
+
+for man in manufacturers:
+	for model in models:
+		shop1.purchase_stock(man.profit_margin, model, model.prod_cost(), 1)
+
+for index in range(0,len(shop1.inventory)):
+	print "Manuf. = ", shop1.inventory[index].manufacturer.name, "\t Model = ",shop1.inventory[index].name
+
+for cust in customers:
+	for model in models:
+		whole_sale = wholesale_price(model.prod_cost(),model.manufacturer.profit_margin)
+		retail = retail_price(whole_sale, shop1.profit_margin)
+		model.retail = retail
+		print cust.name, "\t",cust.bike_fund, "\t", model.name, "\t","$",retail, cust.afford(model),"\n"
+
