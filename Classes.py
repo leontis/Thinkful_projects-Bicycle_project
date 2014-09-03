@@ -50,24 +50,22 @@ class Bicycle_model(object):
 		return self.frame.prod_cost() + 2*self.wheel.prod_cost() 
 
 class Manufacturer(object):
-	
 	def __init__(self,name,profit_margin):
 		self.name = name
 		self.profit_margin = profit_margin
 		self.bicycle_models = []
 		self.wholesale_price_list = {}
-
 	def manufacture(self,model):
 		self.bicycle_models.append(model)
 		#print "Produced bicycle"
-		self.wholesale_price
-		return self.bicycle_models	
+		return self.bicycle_models
+	def wholesale_price(self, prod_cost):
+		return prod_cost*(1 + self.profit_margin) 	
 
 class Bike_shop(object):
-	inventory = []
-	def __init__(self,name, inventory, profit_margin):	
+	def __init__(self, name, inventory, profit_margin):	
 		self.name = name
-		self.inventory = inventory
+		self.inventory = []
 		self.profit_margin = profit_margin
 	def purchase_stock(self,profit_margin,model,prod_cost,quantity):
 		for i in range(0,quantity):
@@ -75,13 +73,15 @@ class Bike_shop(object):
 			wholesale_price = (1 + float(profit_margin))*prod_cost
 			total_price = quantity*wholesale_price
 		return wholesale_price, total_price
+	def retail_price(self,whole_sale_price):
+		retail_price = whole_sale_price*(1 + self.profit_margin)
+		return retail_price 	
 
 class Customer(object):
-	bikes_owned = []
-	def __init__(self,name,bike_fund,bikes_owned):
+	def __init__(self,name,bike_fund):
 		self.name = name
 		self.bike_fund = bike_fund	
-		self.bikes_owned = bikes_owned
+		self.bikes_owned = []
 	def afford(self,bicycle_model):	
 		if bicycle_model.retail < self.bike_fund:
 			can_afford = True
